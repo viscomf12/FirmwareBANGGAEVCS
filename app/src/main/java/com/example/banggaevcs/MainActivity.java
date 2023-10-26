@@ -37,11 +37,6 @@ import java.security.SecureRandom;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
-    private static final int BLUETOOTH_PERMISSION_REQUEST_CODE = 1;
-    private static final int BLUETOOTH_ENABLE_REQUEST_CODE = 2;
-    private static final int BLUETOOTH_SCAN_REQUEST_CODE = 3;
-    private static final int REQUEST_DISCOVERABLE = 4;
-    private static final int CAMERA_PERMISSION_REQUEST = 5;
     static final UUID myServiceUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private boolean evcsFound = false;
     public DatabaseData databaseData;
@@ -227,38 +222,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-
     private void startBluetoothScan() {
         if (bluetoothAdapter.isDiscovering()) {
             bluetoothAdapter.cancelDiscovery();
         }
         bluetoothAdapter.startDiscovery();
         Toast.makeText(this, "Scanning...", Toast.LENGTH_SHORT).show();
-    }
-
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == BLUETOOTH_ENABLE_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
-                bluetoothAdapter.enable();
-            } else {
-                makeText(MainActivity.this, "Dapat Terlihat", Toast.LENGTH_SHORT).show();
-            }
-        } else if (requestCode == REQUEST_DISCOVERABLE) {
-            if (resultCode == 300) {
-                makeText(MainActivity.this, "Terlihat Untuk 5 Menit", Toast.LENGTH_SHORT).show();
-            } else {
-                makeText(MainActivity.this, "Tidak Dapat Terlihat", Toast.LENGTH_SHORT).show();
-            }
-        } else if (requestCode == CAMERA_PERMISSION_REQUEST) {
-            if (resultCode == RESULT_OK && data != null) {
-                makeText(this, "Izin kamera diberikan.", Toast.LENGTH_SHORT).show();
-            } else if (resultCode == RESULT_CANCELED) {
-                makeText(this, "Izin kamera tidak diberikan.", Toast.LENGTH_SHORT).show();
-            }
-        }
     }
 
     private final BroadcastReceiver bondReceiver = new BroadcastReceiver() {
