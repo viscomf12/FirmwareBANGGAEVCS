@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "128726050640",
+    "firebase_url": "https://coba-coba-bae83-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "coba-coba-bae83",
+    "storage_bucket": "coba-coba-bae83.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:128726050640:android:479694ff7bc3f598232e55",
+        "android_client_info": {
+          "package_name": "com.example.banggaevcs"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC7dWE6AukSt4VEvHNC0qkw9ySrdrBcIjU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
