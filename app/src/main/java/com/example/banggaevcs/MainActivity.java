@@ -2,14 +2,6 @@ package com.example.banggaevcs;
 
 import static android.widget.Toast.makeText;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
-import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -17,16 +9,17 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
@@ -41,7 +34,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.SecureRandom;
-import java.util.Random;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
@@ -54,9 +46,9 @@ public class MainActivity extends AppCompatActivity {
     private boolean evcsFound = false;
     public DatabaseData databaseData;
     public TokenData tokenData;
+    private BluetoothPermission bluetoothPermission;
     private OutputStream outputStream;
     private InputStream inputStream;
-    private Handler mHandler;
     BluetoothAdapter bluetoothAdapter;
     BluetoothSocket bluetoothSocket;
     BluetoothDevice bluetoothDevice;
@@ -65,129 +57,6 @@ public class MainActivity extends AppCompatActivity {
     ImageView status;
     Button onoff, scan, data, scanqr;
 
-    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
-    private boolean checkBluetoothPermissionAndroidT() {
-        String bluetoothPermission = android.Manifest.permission.BLUETOOTH;
-        String adminPermission = android.Manifest.permission.BLUETOOTH_ADMIN;
-        String scanPermission = android.Manifest.permission.BLUETOOTH_SCAN;
-        String connectPermission = android.Manifest.permission.BLUETOOTH_CONNECT;
-
-        return ContextCompat.checkSelfPermission(this, bluetoothPermission) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(this, adminPermission) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(this, connectPermission) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(this, scanPermission) == PackageManager.PERMISSION_GRANTED
-                ;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
-    private void requestBluetoothPermissionsAndroidT() {
-        String[] permissions = {
-                android.Manifest.permission.BLUETOOTH,
-                android.Manifest.permission.BLUETOOTH_ADMIN,
-                android.Manifest.permission.BLUETOOTH_CONNECT,
-                android.Manifest.permission.BLUETOOTH_SCAN,
-        };
-        ActivityCompat.requestPermissions(this, permissions, BLUETOOTH_PERMISSION_REQUEST_CODE);
-    }
-    @RequiresApi(api = Build.VERSION_CODES.S)
-    private boolean checkBluetoothPermissionsAndroidS() {
-        String bluetoothPermission = android.Manifest.permission.BLUETOOTH;
-        String adminPermission = android.Manifest.permission.BLUETOOTH_ADMIN;
-        String scanPermission = android.Manifest.permission.BLUETOOTH_SCAN;
-        String connectPermission = android.Manifest.permission.BLUETOOTH_CONNECT;
-
-        return ContextCompat.checkSelfPermission(this, bluetoothPermission) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(this, adminPermission) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(this, connectPermission) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(this, scanPermission) == PackageManager.PERMISSION_GRANTED
-                ;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.S)
-    private void requestBluetoothPermissionsAndroidS() {
-        String[] permissions = {
-                android.Manifest.permission.BLUETOOTH,
-                android.Manifest.permission.BLUETOOTH_ADMIN,
-                android.Manifest.permission.BLUETOOTH_CONNECT,
-                android.Manifest.permission.BLUETOOTH_SCAN,
-        };
-        ActivityCompat.requestPermissions(this, permissions, BLUETOOTH_PERMISSION_REQUEST_CODE);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.R)
-    private boolean checkBluetoothPermissionsAndroidR() {
-        String bluetoothPermission = android.Manifest.permission.BLUETOOTH;
-        String adminPermission = android.Manifest.permission.BLUETOOTH_ADMIN;
-
-        return ContextCompat.checkSelfPermission(this, bluetoothPermission) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(this, adminPermission) == PackageManager.PERMISSION_GRANTED
-                ;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.R)
-    private void requestBluetoothPermissionsAndroidR() {
-        String[] permissions = {
-                android.Manifest.permission.BLUETOOTH,
-                android.Manifest.permission.BLUETOOTH_ADMIN,
-        };
-        ActivityCompat.requestPermissions(this, permissions, BLUETOOTH_PERMISSION_REQUEST_CODE);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.Q)
-    private boolean checkBluetoothPermissionsAndroidQ() {
-        String bluetoothPermission = android.Manifest.permission.BLUETOOTH;
-        String adminPermission = android.Manifest.permission.BLUETOOTH_ADMIN;
-
-        return ContextCompat.checkSelfPermission(this, bluetoothPermission) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(this, adminPermission) == PackageManager.PERMISSION_GRANTED
-                ;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.Q)
-    private void requestBluetoothPermissionsAndroidQ() {
-        String[] permissions = {
-                android.Manifest.permission.BLUETOOTH,
-                android.Manifest.permission.BLUETOOTH_ADMIN,
-        };
-        ActivityCompat.requestPermissions(this, permissions, BLUETOOTH_PERMISSION_REQUEST_CODE);
-    }
-
-    private boolean checkLocationPermission() {
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, BLUETOOTH_SCAN_REQUEST_CODE);
-            return false;
-        }
-        return true;
-    }
-
-    private boolean checkBluetoothPermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            if (!checkBluetoothPermissionsAndroidQ()) {
-                requestBluetoothPermissionsAndroidQ();
-                return false;
-            }
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            if (!checkBluetoothPermissionsAndroidS()) {
-                requestBluetoothPermissionsAndroidS();
-                return false;
-            }
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            if (!checkBluetoothPermissionsAndroidR()) {
-                requestBluetoothPermissionsAndroidR();
-                return false;
-            }
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (!checkBluetoothPermissionAndroidT()) {
-                requestBluetoothPermissionsAndroidT();
-                return false;
-            }
-        }
-        return true;
-
-    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -204,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
         data = findViewById(R.id.data);
         scanqr = findViewById(R.id.scanqr);
         scanqr.setEnabled(false);
+
+        bluetoothPermission = new BluetoothPermission(this);
 
         FirebaseApp.initializeApp(this);
         databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -235,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!bluetoothAdapter.isEnabled()) {
-                    if (checkBluetoothPermissions()) {
+                    if (bluetoothPermission.checkBluetoothPermissions()) {
                         bluetoothAdapter.enable();
                         status.setImageResource(R.drawable.ic_bluetooth_nyala);
                         makeText(MainActivity.this, "Sedang Dinyalakan", Toast.LENGTH_SHORT).show();
@@ -251,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
         scan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (checkLocationPermission()) {
+                if (bluetoothPermission.checkLocationPermission()) {
                     startBluetoothScan();
                 }
             }
