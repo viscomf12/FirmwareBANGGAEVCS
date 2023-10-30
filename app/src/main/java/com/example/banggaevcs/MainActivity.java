@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
         bluetoothAdapter = Bluetooth.getBluetoothAdapter();
-        outputStream = Bluetooth.getOutputStream();
+//        outputStream = Bluetooth.getOutputStream();
 
         IntentFilter bonding = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
         registerReceiver(bondReceiver, bonding);

@@ -123,11 +123,11 @@ public class DataListActivity extends AppCompatActivity {
                 }
             }
 
-            private void displayReceivedMessage(final String message) {
+            private void displayReceivedMessage(String message) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        String[] data = message.split("/");
+                        String[] data = message.split(",");
                         String[] eachData = new String[data.length];
                         for(int i=0; i<data.length; i++){
                             eachData[i] = String.valueOf(data[i]);
@@ -135,6 +135,7 @@ public class DataListActivity extends AppCompatActivity {
                         data1.setText(eachData[0]);
                         data2.setText(eachData[1]);
                         data3.setText(eachData[2]);
+                        data4.setText(message);
                     }
                 });
             }
