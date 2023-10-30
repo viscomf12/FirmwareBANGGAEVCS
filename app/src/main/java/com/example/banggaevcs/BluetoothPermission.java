@@ -13,6 +13,7 @@ public class BluetoothPermission {
     private static final int BLUETOOTH_PERMISSION_REQUEST_CODE = 1;
     private static final int BLUETOOTH_SCAN_REQUEST_CODE = 2;
     private final Activity activity;
+
     public BluetoothPermission(Activity activity) {
         this.activity = activity;
     }
@@ -103,7 +104,7 @@ public class BluetoothPermission {
         };
         ActivityCompat.requestPermissions(activity, permissions, BLUETOOTH_PERMISSION_REQUEST_CODE);
     }
-
+    
     boolean checkLocationPermission() {
         if (ActivityCompat.checkSelfPermission(activity, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, BLUETOOTH_SCAN_REQUEST_CODE);

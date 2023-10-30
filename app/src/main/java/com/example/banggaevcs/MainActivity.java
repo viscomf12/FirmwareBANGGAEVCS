@@ -33,8 +33,11 @@ import com.journeyapps.barcodescanner.ScanOptions;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
 import java.security.SecureRandom;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.zip.CRC32;
 
 public class MainActivity extends AppCompatActivity {
     static final UUID myServiceUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
@@ -150,18 +153,15 @@ public class MainActivity extends AppCompatActivity {
                 if (dataSnapshot.exists()) {
                     String csid = dataSnapshot.child("CSID").getValue(String.class);
                     String time= dataSnapshot.child("Time").getValue(String.class);
-                    String token = dataSnapshot.child("Token").getValue(String.class);
 
-                    databaseData = new DatabaseData(csid, time, token);
+                    databaseData = new DatabaseData(csid, time);
 
                     data1.setText(csid);
-                    data2.setText(token);
-                    data3.setText(time);
+                    data2.setText(time);
 
                 } else {
                     data1.setText("Data tidak ditemukan");
                     data2.setText("Data tidak ditemukan");
-                    data3.setText("Data tidak ditemukan");
                 }
             }
 
@@ -181,7 +181,18 @@ public class MainActivity extends AppCompatActivity {
         int c = 2 * b ;
         int d = 10000 - (b + a) + c;
 
-        String tokenevcs = a + "," + b + "," + c + "," + d;
+        //nambah data CRC
+        int e = a / 2;
+        int f = b / 2;
+        int g = c / 2;
+        int h = d / 2;
+        String x = e + "" + f + "" + g + "" + h;
+        if (x.length() > 8) {
+            x = x.substring(0, 8);
+        }
+        data3.setText(x);
+
+        String tokenevcs = a + "," + b + "," + c + "," + d + "," + x;
         token.setText(tokenevcs);
         tokenData = new TokenData(tokenevcs);
         return tokenevcs;
@@ -197,10 +208,15 @@ public class MainActivity extends AppCompatActivity {
     private void processScannedData(String pesan) {
         String[] parts = pesan.split("/");
         if (parts.length == 4) {
-            String uuid = parts[1];
-            String macAddress = parts[2];
+            String uuid = parts[0];
+            String macAddress = parts[1];
+            String csid = parts[2];
             String deviceName = parts[3];
-            pairAndConnectDevice(macAddress);
+            if (Objects.equals(databaseData.getCsid(), csid)) {
+                pairAndConnectDevice(macAddress);
+            } else {
+                Toast.makeText(this, "CSID Salah", Toast.LENGTH_SHORT).show();
+            }
         } else {
             Toast.makeText(this, "Error Connecting", Toast.LENGTH_SHORT).show();
         }
@@ -284,11 +300,8 @@ public class MainActivity extends AppCompatActivity {
             byte[] tokenEvcsBytes = tokenEvcs.getBytes();
             outputStream.write(tokenEvcsBytes);
             if(databaseData != null) {
-                String csidToSend = databaseData.getCsid() + "\n";
                 String timeToSend = databaseData.getTime() + "\n";
-                byte[] csidBytes = csidToSend.getBytes();
                 byte[] timeBytes = timeToSend.getBytes();
-                outputStream.write(csidBytes);
                 outputStream.write(timeBytes);
             }
             Bluetooth.setBluetoothDevice(bluetoothDevice);

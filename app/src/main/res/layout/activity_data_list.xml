@@ -28,26 +28,6 @@
 
         </TextView>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/waktu1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="1 Jam"
-                android:layout_weight="1"/>
-
-            <Button
-                android:id="@+id/waktu2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="2 Jam"
-                android:layout_weight="1"/>
-
-        </LinearLayout>
 
         <TextView
             android:id="@+id/data1"

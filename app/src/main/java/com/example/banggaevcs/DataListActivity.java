@@ -32,7 +32,7 @@ public class DataListActivity extends AppCompatActivity {
     OutputStream outputStream;
     TextView kwh, data1, data2, data3, data4;
     EditText kontol;
-    Button kembali, send, disconnect, waktu1, waktu2;
+    Button kembali, send, disconnect;
     ImageView status;
 
     @Override
@@ -50,8 +50,6 @@ public class DataListActivity extends AppCompatActivity {
         send = findViewById(R.id.send);
         disconnect = findViewById(R.id.disconnect);
         status = findViewById(R.id.status);
-        waktu1 = findViewById(R.id.waktu1);
-        waktu2 = findViewById(R.id.waktu2);
 
         bluetoothAdapter = Bluetooth.getBluetoothAdapter();
         bluetoothSocket = Bluetooth.getBluetoothSocket();
@@ -66,32 +64,6 @@ public class DataListActivity extends AppCompatActivity {
         } else {
             status.setImageResource((R.drawable.ic_tidak_terhubung));
         }
-
-        int selectedTime = getIntent().getIntExtra("selectedTime", 0);
-
-        waktu1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    outputStream.write(selectedTime);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
-
-//        waktu2.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                selectedTime = 2;
-//                try {
-//                    outputStream.write(selectedTime);
-//                } catch (IOException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
-//        });
-
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -139,11 +111,10 @@ public class DataListActivity extends AppCompatActivity {
                 while (Bluetooth.isConnected()) {
                     try {
                         bytes = inputStream.read(buffer);
-                        String receivedMessage = new String(buffer, 2, bytes - 2);
-                        String identitas = new String (buffer, 0, 2);
+                        String receivedMessage = new String(buffer, 0, bytes);
 
                         Log.d("BluetoothDebug", "dapet Message from Bluetooth: " + receivedMessage);
-                        displayReceivedMessage(receivedMessage, identitas);
+                        displayReceivedMessage(receivedMessage);
 
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -152,24 +123,18 @@ public class DataListActivity extends AppCompatActivity {
                 }
             }
 
-            private void displayReceivedMessage(final String message, final String identitas) {
+            private void displayReceivedMessage(final String message) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-//                        komunikasi.setText(message);
-                        switch (identitas) {
-                            case "D0":
-                                data1.setText("V: " + message + " V");
-                                break;
-                            case "D1":
-                                data2.setText("F: " + message + " Hz");
-                                break;
-                            case "D2":
-                                data3.setText("I: " + message + "A");
-                                break;
-                            case "D3":
-                                data4.setText(message);
+                        String[] data = message.split("/");
+                        String[] eachData = new String[data.length];
+                        for(int i=0; i<data.length; i++){
+                            eachData[i] = String.valueOf(data[i]);
                         }
+                        data1.setText(eachData[0]);
+                        data2.setText(eachData[1]);
+                        data3.setText(eachData[2]);
                     }
                 });
             }
