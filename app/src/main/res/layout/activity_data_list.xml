@@ -32,7 +32,7 @@
         <TextView
             android:id="@+id/data1"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="70dp"
             android:textSize="20sp">
 
         </TextView>
@@ -40,7 +40,7 @@
         <TextView
             android:id="@+id/data2"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="70dp"
             android:textSize="20sp">
 
         </TextView>
@@ -48,7 +48,7 @@
         <TextView
             android:id="@+id/data3"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="70dp"
             android:textSize="20sp">
 
         </TextView>
@@ -56,7 +56,15 @@
         <TextView
             android:id="@+id/data4"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="70dp"
+            android:textSize="20sp">
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/data5"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
             android:textSize="20sp">
 
         </TextView>
