@@ -23,7 +23,6 @@ import java.io.OutputStream;
 import java.util.concurrent.ScheduledExecutorService;
 
 public class DataListActivity extends AppCompatActivity {
-    private int selectedTime = 0;
     MainActivity mainActivity;
     BluetoothAdapter bluetoothAdapter;
     BluetoothSocket bluetoothSocket;

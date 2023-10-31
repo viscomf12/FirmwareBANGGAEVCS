@@ -33,11 +33,9 @@ import com.journeyapps.barcodescanner.ScanOptions;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.ByteBuffer;
 import java.security.SecureRandom;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.zip.CRC32;
 
 public class MainActivity extends AppCompatActivity {
     static final UUID myServiceUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
@@ -45,8 +43,8 @@ public class MainActivity extends AppCompatActivity {
     public DatabaseData databaseData;
     public TokenData tokenData;
     private BluetoothPermission bluetoothPermission;
-    private OutputStream outputStream;
-    private InputStream inputStream;
+    OutputStream outputStream;
+    InputStream inputStream;
     BluetoothAdapter bluetoothAdapter;
     BluetoothSocket bluetoothSocket;
     BluetoothDevice bluetoothDevice;
@@ -78,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
         databaseReference = FirebaseDatabase.getInstance().getReference();
 
         bluetoothAdapter = Bluetooth.getBluetoothAdapter();
-//        outputStream = Bluetooth.getOutputStream();
 
         IntentFilter bonding = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
         registerReceiver(bondReceiver, bonding);
@@ -296,14 +293,19 @@ public class MainActivity extends AppCompatActivity {
             bluetoothSocket.connect();
             inputStream=bluetoothSocket.getInputStream();
             outputStream=bluetoothSocket.getOutputStream();
-            String tokenEvcs = generateToken() + "\n";
-            byte[] tokenEvcsBytes = tokenEvcs.getBytes();
-            outputStream.write(tokenEvcsBytes);
-            if(databaseData != null) {
-                String timeToSend = databaseData.getTime() + "\n";
-                byte[] timeBytes = timeToSend.getBytes();
-                outputStream.write(timeBytes);
+            if (databaseData != null) {
+                String tokenWithTime = generateToken() + "," + databaseData.getTime() + "\n";
+                byte[] tokenTimeBytes = tokenWithTime.getBytes();
+                outputStream.write(tokenTimeBytes);
             }
+//            String tokenEvcs = generateToken();
+//            byte[] tokenEvcsBytes = tokenEvcs.getBytes();
+//            outputStream.write(tokenEvcsBytes);
+//            if(databaseData != null) {
+//                String timeToSend = databaseData.getTime() + "\n";
+//                byte[] timeBytes = timeToSend.getBytes();
+//                outputStream.write(timeBytes);
+//            }
             Bluetooth.setBluetoothDevice(bluetoothDevice);
             Bluetooth.setBluetoothSocket(bluetoothSocket);
             Bluetooth.setInputStream(inputStream);
