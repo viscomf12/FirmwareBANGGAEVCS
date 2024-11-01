@@ -29,7 +29,7 @@ public class DataListActivity extends AppCompatActivity {
     BluetoothDevice bluetoothDevice;
     InputStream inputStream;
     OutputStream outputStream;
-    TextView kwh, data1, data2, data3, data4, data5;
+    TextView kwh, data1, data2, data3, data4, data5, data6;
     EditText kontol;
     Button kembali, send, disconnect;
     ImageView status;
@@ -44,6 +44,7 @@ public class DataListActivity extends AppCompatActivity {
         data3 = findViewById(R.id.data3);
         data4 = findViewById(R.id.data4);
         data5 = findViewById(R.id.data5);
+        data6 = findViewById(R.id.data6);
         kembali = findViewById(R.id.kembali);
         kwh = findViewById(R.id.kwh);
         kontol = findViewById(R.id.kontol);
@@ -137,6 +138,7 @@ public class DataListActivity extends AppCompatActivity {
                         data3.setText(eachData[2]);
                         data4.setText(eachData[3]);
                         data5.setText(eachData[4]);
+//                        data6.setText(eachData[5]);
                     }
                 });
             }
